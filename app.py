@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, send_file
+from flask import Flask, render_template, request, send_file, Response
 
 import os
 import pandas as pd
@@ -16,26 +16,34 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    x = request.files['x']
-    df = pd.read_csv(x)
-    cloudtest_instance = CloudTest(df)
-    prediction = cloudtest_instance.main()
+    try:
+        x = request.files['x']
+        df = pd.read_csv(x)
+        cloudtest_instance = CloudTest(df)
+        prediction = cloudtest_instance.main()
 
-    # Create a response object with the output data as a CSV attachment
-    output_csv = pd.DataFrame({'output': prediction})
-    output_csv['output'] = output_csv['output'].astype(int)
-    csv = output_csv.to_string(index=False)
+        # Create a response object with the output data as a CSV attachment
+        output_csv = pd.DataFrame({'output': prediction})
+        output_csv['output'] = output_csv['output'].astype(int)
+        csv = output_csv.to_string(index=False)
 
-    # Set the output filename
-    output_filename = 'output.csv'
+        # Set the output filename
+        output_filename = 'output.csv'
 
-    # Save the output CSV file to disk
-    with open(output_filename, 'w') as f:
-        f.write(csv)
+        # Save the output CSV file to disk
+        with open(output_filename, 'w') as f:
+            f.write(csv)
+
+    except ValueError as e:
+        return Response("Invalid file selected, please go back and select the valid file; Error Occurred! %s" % e)
+    except KeyError as e:
+        return Response("Invalid file selected, please go back and select the valid file; Error Occurred! %s" % e)
+    except Exception as e:
+        return Response("Invalid file selected, please go back and select the valid file; Error Occurred! %s" % e)
 
     # Render the template with the output data and filename
 
-    return render_template('index.html', prediction_text=" Prediction was successful! Here are the first 15 values:       {}".format(prediction.head(15).astype(int).to_string(index=False)),output_csv=csv, output_filename=output_filename)
+    return render_template('index.html', prediction_text="Prediction was successful!!! Here are the first 15 output values:       {}".format(prediction.head(15).astype(int).to_string(index=False)),output_csv=csv, output_filename=output_filename)
 
 @app.route('/download', methods=['GET'])
 def download():
