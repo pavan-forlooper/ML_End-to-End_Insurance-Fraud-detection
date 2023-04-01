@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button[type="submit"], button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+            display: inline-block;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .output-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            display: none;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+
+        h1, h2, h3, h4, h5 {
+          text-align: center;
+          font-family: Helvetica;
+        }
+
+        .button-container {
+          text-align: center;
+          margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Insurance Fraud Detection</h2>
+    <h4>To find if an insurance claim made is fraud</h4>
+    <h5>Output: "1" if the insurance claim made is false, and "0" otherwise</h5>
+
+    <form action="/predict" method="post" enctype="multipart/form-data">
+      <div class="button-container">
+        <input type="file" name="x" accept=".csv">
+        <button type="submit">Predict</button>
+      </div>
+    </form>
+
+    <br><br>
+
+    {% if prediction_text %}
+        <div>
+            <h3>{{ prediction_text }}</h3>
+            <br>
+            <div class="button-container">
+              <button onclick="document.getElementById('Output').style.display = 'block'">view full output</button>
+              <a href="/download"><button>Download Output as a csv file</button></a>
+            </div>
+            <div id="Output" style="display:none; text-align: center;">
+                <pre>{{ output_csv }}</pre>
+                <br>
+            </div>
+        </div>
+    {% endif %}
+
+<div class="footer">
+    <footer style="position: fixed; background-color: #fff; padding: 5px; font-size: 12px;">
+      <p>Made by Pavan (apavan074@gmail.com), 2023.</p>
+      <p>Deployed in Azure platform.</p>
+    </footer>
+    </div>
+
+</body>
+</html>
